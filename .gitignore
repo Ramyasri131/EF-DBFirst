@@ -1,0 +1,17 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/EmployeeDirectory
+/EmployeeDirectory/bin/Debug/net8.0
+/EmployeeDirectory/obj
+/EmployeeDirectory.BAL/bin/Debug/net8.0
+/EmployeeDirectory.BAL/obj
+/EmployeeDirectory.DAL/bin/Debug/net8.0
+/EmployeeDirectory.DAL/obj
+/.vs/ProjectEvaluation
+/.vs
+/EmployeeDirectory/bin/Release/net8.0
+/EmployeeDirectory.BAL/bin/Release/net8.0
+/EmployeeDirectory.DAL/bin/Release/net8.0
+/Queries.sql
