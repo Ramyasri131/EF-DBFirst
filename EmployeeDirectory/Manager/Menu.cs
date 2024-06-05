@@ -2,7 +2,6 @@
 using EmployeeDirectory.StaticData;
 using EmployeeDirectory.Interfaces;
 using EmployeeDirectory.BAL.Exceptions;
-using EmployeeDirectory.BAL.Interfaces;
 
 namespace EmployeeDirectory.Manager
 {

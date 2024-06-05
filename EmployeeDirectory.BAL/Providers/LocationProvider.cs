@@ -1,6 +1,5 @@
 ﻿using EmployeeDirectory.BAL.Interfaces;
 using EmployeeDirectory.DAL.Interfaces;
-using Microsoft.EntityFrameworkCore;
 
 
 namespace EmployeeDirectory.BAL.Providers

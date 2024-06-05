@@ -1,5 +1,4 @@
-﻿using System.Data;
-using EmployeeDirectory.BAL.Exceptions;
+﻿using EmployeeDirectory.BAL.Exceptions;
 using EmployeeDirectory.BAL.Extensions;
 using EmployeeDirectory.DAL.Interfaces;
 using EmployeeDirectory.BAL.Interfaces;
@@ -20,7 +19,6 @@ namespace EmployeeDirectory.BAL.Providers
         {
             List<DAL.Models.Employee>employees;
             employees = await _employeeRepository.GetEmployees();
-            employees.OrderBy(x => x.Id);
             int employeeCount = int.Parse(employees[^1].Id[2..]) + 1;
             string id = string.Format("{0:0000}", employeeCount);
             id = "TZ" + id;
@@ -59,7 +57,7 @@ namespace EmployeeDirectory.BAL.Providers
                 Department = employee.Department,
                 Project = employee.Project,
             };
-            await _employeeRepository.InsertEmployee(user);
+            await _employeeRepository.AddEmployee(user);
         }
 
         public async Task<List<DAL.Models.Employee>> GetEmployees()

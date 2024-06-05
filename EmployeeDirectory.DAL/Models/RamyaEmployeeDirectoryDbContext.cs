@@ -30,7 +30,6 @@ public partial class RamyaEmployeeDirectoryDbContext : DbContext
 
     }
 
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Department>(entity =>

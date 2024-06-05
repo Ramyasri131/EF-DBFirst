@@ -1,8 +1,7 @@
 ﻿using EmployeeDirectory.BAL.Providers;
 using EmployeeDirectory.BAL.DTO;
 using System.Reflection;
-using System.Reflection.Metadata;
-using EmployeeDirectory.StaticData;
+
 
 namespace EmployeeDirectory.Utilities
 {

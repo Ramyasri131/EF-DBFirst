@@ -10,7 +10,7 @@ namespace EmployeeDirectory.DAL.Data
 
         public async Task<List<Employee>> GetEmployees()
         {
-            return await dbContext.Employees.ToListAsync();
+            return await dbContext.Employees.OrderBy(x=>x.Id).ToListAsync();
         }
 
         public async Task<Employee?> GetEmployee(string? id)
@@ -18,7 +18,7 @@ namespace EmployeeDirectory.DAL.Data
             return await dbContext.Employees.FirstOrDefaultAsync(e => string.Equals(e.Id, id));
         }
 
-        public async Task InsertEmployee(Employee employee)
+        public async Task AddEmployee(Employee employee)
         {
             dbContext.Employees.Add(employee);
             await dbContext.SaveChangesAsync();

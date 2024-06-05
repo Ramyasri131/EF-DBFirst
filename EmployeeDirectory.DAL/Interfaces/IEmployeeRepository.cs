@@ -8,8 +8,7 @@ namespace EmployeeDirectory.DAL.Interfaces
 
         public Task<Employee?> GetEmployee(string? id);
 
-        //Addemp
-        public Task InsertEmployee(Employee employee);
+        public Task AddEmployee(Employee employee);
 
         public Task UpdateEmployee(Employee employee);
 
