@@ -10,10 +10,9 @@ namespace EmployeeDirectory.Manager
     {
         private readonly IEmployeeService _employeeService = employeeService;
         private readonly IRoleService _roleService = roleService;
-       
+
         public async Task DisplayMainMenu()
         {
-           
             Display.Print("Main Menu");
             foreach (var item in Constants.MainMenu)
             {
@@ -29,16 +28,17 @@ namespace EmployeeDirectory.Manager
                 {
                     case 1:
                         await DisplayEmployeeManagementMenu();
-                        break;
+                        return;
                     case 2:
                         await DisplayRoleManagementMenu();
-                        break;
+                        return;
                     case 3:
                         Display.Print("Exit");
-                        return;
+                        System.Environment.Exit(0);
+                        break;
                     default:
                         Display.Print("Invalid Option");
-                        break;
+                        return;
                 }
             }
             catch (FormatException ex)
@@ -83,7 +83,7 @@ namespace EmployeeDirectory.Manager
                         return;
                     default:
                         Display.Print("Enter valid option");
-                        break;
+                        return;
                 }
             }
             catch(FormatException ex)
@@ -121,16 +121,16 @@ namespace EmployeeDirectory.Manager
                 {
                     case 1:
                        await _roleService.GetRoles();
-                        break;
+                        return;
                     case 2:
                         await _roleService.DisplayRoles();
-                        break;
+                        return;
                     case 3:
                         await DisplayMainMenu();
                         return;
                     default:
                         Display.Print("Invalid Option");
-                        break;
+                        return;
                 }
             }
             catch (FormatException )

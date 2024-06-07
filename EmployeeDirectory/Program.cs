@@ -9,6 +9,7 @@ using EmployeeDirectory.DAL.Repository;
 using Microsoft.Extensions.Configuration;
 using EmployeeDirectory.DAL.Models;
 using Microsoft.EntityFrameworkCore;
+using EmployeeDirectory.DAL.Repositories;
 
 namespace EmployeeDirectory
 {
@@ -26,12 +27,13 @@ namespace EmployeeDirectory
             serviceCollection.AddScoped<ILocationRepository, LocationRepository>();
             serviceCollection.AddScoped<IManagerRepository, ManagerRepository>();
             serviceCollection.AddScoped<IProjectRepository, ProjectRepository>();
-            serviceCollection.AddSingleton<IEmployeeProvider, EmployeeProvider>();
-            serviceCollection.AddSingleton<IRoleProvider, RoleProvider>();
-            serviceCollection.AddSingleton<IDepartmentProvider, DepartmentsProvider>();
-            serviceCollection.AddSingleton<ILocationProvider, LocationProvider>();
-            serviceCollection.AddSingleton<IManagerProvider, ManagerProvider>();
-            serviceCollection.AddSingleton<IProjectProvider, ProjectsProvider>();
+            serviceCollection.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            serviceCollection.AddScoped<IEmployeeProvider, EmployeeProvider>();
+            serviceCollection.AddScoped<IRoleProvider, RoleProvider>();
+            serviceCollection.AddScoped<IDepartmentProvider, DepartmentsProvider>();
+            serviceCollection.AddScoped<ILocationProvider, LocationProvider>();
+            serviceCollection.AddScoped<IManagerProvider, ManagerProvider>();
+            serviceCollection.AddScoped<IProjectProvider, ProjectsProvider>();
             IConfiguration configuration = new ConfigurationBuilder().AddJsonFile("appSettings.json").Build();
             serviceCollection.AddDbContext<RamyaEmployeeDirectoryDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("EmployeeDirectoryDB")));
 

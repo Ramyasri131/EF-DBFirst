@@ -11,7 +11,7 @@ namespace EmployeeDirectory.BAL.Providers
 
         public async Task GetProjects()
         {
-            List<Project> projects = await _ProjectRepository.GetProjects();
+            List<Project> projects = await _ProjectRepository.GetAll();
             foreach (Project project in projects)
             {
                 Projects.Add(project.Id, project.Name);

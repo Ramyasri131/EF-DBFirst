@@ -1,9 +1,9 @@
-﻿namespace EmployeeDirectory.DAL.Interfaces
-{
-    public interface IRoleRepository
-    {
-        public Task<List<Models.Role>> GetRoles();
+﻿using EmployeeDirectory.DAL.Models;
 
-        public Task AddRole(Models.Role role);
+namespace EmployeeDirectory.DAL.Interfaces
+{
+    public interface IRoleRepository: IGenericRepository<Role>
+    {
+       
     }
 }

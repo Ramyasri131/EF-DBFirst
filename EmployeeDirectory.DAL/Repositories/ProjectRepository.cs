@@ -1,16 +1,10 @@
 ﻿using EmployeeDirectory.DAL.Interfaces;
 using EmployeeDirectory.DAL.Models;
-using Microsoft.EntityFrameworkCore;
+using EmployeeDirectory.DAL.Repositories;
 
 namespace EmployeeDirectory.DAL.Repository
 {
-    public class ProjectRepository(RamyaEmployeeDirectoryDbContext dbContext) : IProjectRepository
+    public class ProjectRepository(RamyaEmployeeDirectoryDbContext dbContext) : GenericRepository<Project>(dbContext),IProjectRepository
     {
-        private readonly RamyaEmployeeDirectoryDbContext _dbContext = dbContext;
-
-        public async Task<List<Project>> GetProjects()
-        {
-            return await _dbContext.Set<Project>().ToListAsync();
-        }
     }
 }

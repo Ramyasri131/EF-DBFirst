@@ -16,14 +16,14 @@
 
         public string? DateOfJoin { get; set; }
 
-        public int Location { get; set; } 
+        public string? Location { get; set; } 
 
-        public int JobTitle { get; set; } 
+        public string? JobTitle { get; set; } 
 
-        public int Department { get; set; }
+        public string? Department { get; set; }
 
-        public int Manager { get; set; }
+        public string? Manager { get; set; }
 
-        public int Project { get; set; } 
+        public string? Project { get; set; } 
     }
 }

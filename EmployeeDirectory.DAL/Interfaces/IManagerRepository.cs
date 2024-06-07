@@ -2,9 +2,9 @@
 
 namespace EmployeeDirectory.DAL.Interfaces
 {
-    public interface IManagerRepository
+    public interface IManagerRepository:IGenericRepository<Manager>
     {
-        public Task<List<Manager>> GetManagers();
+        
 
     }
 }

@@ -2,8 +2,8 @@
 
 namespace EmployeeDirectory.DAL.Interfaces
 {
-    public interface ILocationRepository
+    public interface ILocationRepository:IGenericRepository<Location>
     {
-        public Task<List<Location>> GetLocations();
+        
     }
 }

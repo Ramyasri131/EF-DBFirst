@@ -11,7 +11,7 @@ namespace EmployeeDirectory.BAL.Providers
 
         public async Task GetManagers()
         {
-            List<Manager>managers = await _ManagerRepository.GetManagers();
+            List<Manager>managers = await _ManagerRepository.GetAll();
             foreach (Manager manager in managers)
             {
                 Managers.Add(manager.Id, manager.Name);

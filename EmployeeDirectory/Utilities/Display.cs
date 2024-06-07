@@ -30,32 +30,9 @@ namespace EmployeeDirectory.Utilities
         {
             foreach (PropertyInfo propertyInfo in employee.GetType().GetProperties())
             {
-                if (string.Equals(propertyInfo.Name, "Location"))
-                {
-                    Display.Print($"{propertyInfo.Name}:{LocationProvider.Location[Convert.ToInt32(propertyInfo.GetValue(employee))]}");
-                }
-                else if (string.Equals(propertyInfo.Name, "Department"))
-                {
-                    Display.Print($"{propertyInfo.Name}:{DepartmentsProvider.Departments[Convert.ToInt32(propertyInfo.GetValue(employee))]}");
-                }
-                else if (string.Equals(propertyInfo.Name, "Manager"))
-                {
-                    Display.Print($"{propertyInfo.Name}:{ManagerProvider.Managers[Convert.ToInt32(propertyInfo.GetValue(employee))]}");
-                }
-                else if (string.Equals(propertyInfo.Name, "Project"))
-                {
-                    Display.Print($"{propertyInfo.Name}:{ProjectsProvider.Projects[Convert.ToInt32(propertyInfo.GetValue(employee))]}");
-                }
-                else if (string.Equals(propertyInfo.Name, "JobTitle"))
-                {
-                    Display.Print($"{propertyInfo.Name}:{RoleProvider.Roles[Convert.ToInt32(propertyInfo.GetValue(employee))]}");
-                }
-                else
-                {
-                    Display.Print($"{propertyInfo.Name}:{propertyInfo.GetValue(employee)}");
-                }
+               Print($"{propertyInfo.Name}:{propertyInfo.GetValue(employee)}");
             }
-            Display.Print("=============================================");
+            Print("=============================================");
         }
 
         public static void PrintRoleData(List<BAL.DTO.Role>? roleData)
@@ -64,20 +41,9 @@ namespace EmployeeDirectory.Utilities
             {
                 foreach (PropertyInfo propertyInfo in item.GetType().GetProperties())
                 {
-                    if(string.Equals(propertyInfo.Name,"Location"))
-                    {
-                        Display.Print($"{propertyInfo.Name}:{LocationProvider.Location[Convert.ToInt32(propertyInfo.GetValue(item))]}");
-                    }
-                    else if(string.Equals(propertyInfo.Name, "Department"))
-                    {
-                        Display.Print($"{propertyInfo.Name}:{DepartmentsProvider.Departments[Convert.ToInt32(propertyInfo.GetValue(item))]}");
-                    }
-                    else
-                    {
-                        Display.Print($"{propertyInfo.Name}:{propertyInfo.GetValue(item)}");
-                    }
+                   Print($"{propertyInfo.Name}:{propertyInfo.GetValue(item)}");
                 }
-                Display.Print("==========================================");
+                Print("==========================================");
             }
         }
     }

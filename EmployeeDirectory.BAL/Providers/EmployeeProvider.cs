@@ -3,10 +3,11 @@ using EmployeeDirectory.BAL.Extensions;
 using EmployeeDirectory.DAL.Interfaces;
 using EmployeeDirectory.BAL.Interfaces;
 using System.Globalization;
+using EmployeeDirectory.DAL.Models;
 
 namespace EmployeeDirectory.BAL.Providers
 {
-    public class EmployeeProvider(IEmployeeRepository employeeRepository,ILocationRepository locationRepository,IDepartmentRepository departmentRepository,IManagerRepository managerRepository,IProjectRepository projectRepository) : IEmployeeProvider
+    public class EmployeeProvider(IEmployeeRepository employeeRepository,ILocationRepository locationRepository,IDepartmentRepository departmentRepository,IManagerRepository managerRepository,IProjectRepository projectRepository,IRoleRepository roleRepository) : IEmployeeProvider
     {
 
         private readonly IEmployeeRepository _employeeRepository = employeeRepository;
@@ -14,56 +15,79 @@ namespace EmployeeDirectory.BAL.Providers
         private readonly IDepartmentRepository _departmentRepository = departmentRepository;
         private readonly IManagerRepository _managerRepository = managerRepository;
         private readonly IProjectRepository _projectRepository = projectRepository;
+        private readonly IRoleRepository _roleRepository = roleRepository;
 
         public async Task AddEmployee(DTO.Employee employee)
         {
-            List<DAL.Models.Employee>employees;
-            employees = await _employeeRepository.GetEmployees();
+            List<Employee>employees;
+            employees = await _employeeRepository.GetAll();
+            Employee user=new Employee();
+            if (employees.Any(emp=> string.Equals(emp.Email, employee.Email)))
+            {
+                throw new InvalidData("Employee with mail exists");
+            }
             int employeeCount = int.Parse(employees[^1].Id[2..]) + 1;
             string id = string.Format("{0:0000}", employeeCount);
             id = "TZ" + id;
-            List<DAL.Models.Location> locations = await _locationRepository.GetLocations();
-            foreach (DAL.Models.Location location in locations)
+            List<Location> locations = await _locationRepository.GetAll();
+            foreach (Location location in locations)
             {
-                employee.Location = string.Equals(location.Name, LocationProvider.Location[employee.Location]) ? location.Id : employee.Location;
+                user.Location = string.Equals(location.Name, employee.Location) ? location.Id : user.Location;
             }
-            List<DAL.Models.Department>  departments= await _departmentRepository.GetDepartments();
-            foreach (DAL.Models.Department  department in departments)
+            List<DAL.Models.Department> departments = await _departmentRepository.GetAll();
+            foreach (DAL.Models.Department department in departments)
             {
-                employee.Department=string.Equals(department.Name,DepartmentsProvider.Departments[employee.Department])? department.Id:employee.Department;
-            } 
-            List<DAL.Models.Manager> managers= await _managerRepository.GetManagers();
-            foreach (DAL.Models.Manager manager in managers)
-            {
-                employee.Manager = string.Equals(manager.Name, ManagerProvider.Managers[employee.Manager]) ? manager.Id : employee.Manager;
-            } 
-            List<DAL.Models.Project> projects = await _projectRepository.GetProjects();
-            foreach (DAL.Models.Project project in projects)
-            {
-                employee.Project = string.Equals(project.Name, ProjectsProvider.Projects[employee.Project]) ? project.Id : employee.Project;
+                user.Department = string.Equals(department.Name, employee.Department) ? department.Id : user.Department;
             }
-            DAL.Models.Employee user = new()
+            List<Manager> managers = await _managerRepository.GetAll();
+            foreach (Manager manager in managers)
             {
-                Id = id,
-                FirstName = employee.FirstName!,
-                LastName = employee.LastName!,
-                DateOfBirth = DateOnly.ParseExact(employee.DateOfBirth!, "dd/MM/yyyy", CultureInfo.InvariantCulture),
-                Manager = employee.Manager,
-                MobileNumber = employee.MobileNumber,
-                DateOfJoin = DateOnly.ParseExact(employee.DateOfJoin!, "dd/MM/yyyy", CultureInfo.InvariantCulture),
-                Email = employee.Email!,
-                Location = employee.Location,
-                JobTitle = employee.JobTitle,
-                Department = employee.Department,
-                Project = employee.Project,
-            };
-            await _employeeRepository.AddEmployee(user);
+                user.Manager = string.Equals(manager.Name, employee.Manager) ? manager.Id : user.Manager;
+            }
+            List<Project> projects = await _projectRepository.GetAll();
+            foreach (Project project in projects)
+            {
+                user.Project = string.Equals(project.Name, employee.Project) ? project.Id : user.Project;
+            }
+            List<Role> roles= await _roleRepository.GetAll();
+            foreach (Role role in roles)
+            {
+                user.JobTitle = string.Equals(role.Name, employee.JobTitle) ? role.Id : user.JobTitle;
+            }
+            user.Id = id;
+            user.FirstName = employee.FirstName!;
+            user.LastName = employee.LastName!;
+            user.DateOfBirth = DateOnly.ParseExact(employee.DateOfBirth!, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            user.MobileNumber = employee.MobileNumber;
+            user.DateOfJoin = DateOnly.ParseExact(employee.DateOfJoin!, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            user.Email = employee.Email!;
+            await _employeeRepository.Add(user);
         }
 
-        public async Task<List<DAL.Models.Employee>> GetEmployees()
+        public async Task<List<BAL.DTO.Employee>> GetEmployees()
         {
-            List<DAL.Models.Employee> employees;
-            employees = await _employeeRepository.GetEmployees();
+            List<Employee> employeeData;
+            employeeData = await _employeeRepository.GetAll();
+            List<BAL.DTO.Employee> employees= new List<BAL.DTO.Employee>();
+            foreach (DAL.Models.Employee employee in employeeData)
+            {
+                BAL.DTO.Employee employeeInput = new()
+                {
+                    Id = employee.Id,
+                    FirstName = employee.FirstName,
+                    LastName = employee.LastName,
+                    DateOfBirth = employee.DateOfBirth.ToString(),
+                    Email = employee.Email,
+                    MobileNumber = employee.MobileNumber,
+                    DateOfJoin = employee.DateOfJoin.ToString(),
+                    Location = LocationProvider.Location[employee.Location],
+                    JobTitle = RoleProvider.Roles[employee.JobTitle],
+                    Department = DepartmentsProvider.Departments[employee.Department],
+                    Manager = ManagerProvider.Managers[employee.Manager],
+                    Project = ProjectsProvider.Projects[employee.Project]
+                };
+                employees.Add(employeeInput);
+            }
             return employees;
         }
 
@@ -75,15 +99,14 @@ namespace EmployeeDirectory.BAL.Providers
             }
             else
             {
-                DAL.Models.Employee? employee = await _employeeRepository.GetEmployee(id);
+                DAL.Models.Employee? employee = await _employeeRepository.GetById(id);
                 if(employee is null)
                 {
                     throw new RecordNotFound("Employee not found");
                 }
                 else
                 {
-                    id = id?.ToUpper();
-                    List<Action<DAL.Models.Employee, string>> modifyEmployeeData = new()
+                    List<Action<Employee, string>> modifyEmployeeData = new()
                     {
                       (item, selectedData) => item.FirstName = selectedData,
                       (item, selectedData) => item.LastName = selectedData,
@@ -98,7 +121,7 @@ namespace EmployeeDirectory.BAL.Providers
                       (item, selectedData) => item.Project = int.Parse(selectedData)
                     };
                     modifyEmployeeData[selectedOption - 1](employee!, selectedData);
-                    await _employeeRepository.UpdateEmployee(employee!);
+                    await _employeeRepository.Update(employee!);
                 }
             }
         }
@@ -111,19 +134,19 @@ namespace EmployeeDirectory.BAL.Providers
             }
             else
             {
-                DAL.Models.Employee? employee = await _employeeRepository.GetEmployee(id);
+                DAL.Models.Employee? employee = await _employeeRepository.GetById(id);
                 if(employee is null)
                 {
                     throw new RecordNotFound("Employee not found");
                 }
                 else
                 {
-                    await _employeeRepository.DeleteEmployee(employee);
+                    await _employeeRepository.Delete(employee);
                 }
             }
         }
 
-        public async Task<DAL.Models.Employee> GetEmployeeById(string? id)
+        public async Task<BAL.DTO.Employee> GetEmployeeById(string? id)
         {
             if (id.IsNullOrEmptyOrWhiteSpace())
             {
@@ -131,14 +154,29 @@ namespace EmployeeDirectory.BAL.Providers
             }
             else
             {
-                DAL.Models.Employee? employee = await _employeeRepository.GetEmployee(id);
+                DAL.Models.Employee? employee = await _employeeRepository.GetById(id);
                 if (employee is null)
                 {
                     throw new RecordNotFound("Employee not found");
                 }
                 else
                 {
-                    return employee;
+                    BAL.DTO.Employee employeeInput = new()
+                    {
+                        Id = employee.Id,
+                        FirstName = employee.FirstName,
+                        LastName = employee.LastName,
+                        DateOfBirth = employee.DateOfBirth.ToString(),
+                        Email = employee.Email,
+                        MobileNumber = employee.MobileNumber,
+                        DateOfJoin = employee.DateOfJoin.ToString(),
+                        Location = LocationProvider.Location[employee.Location],
+                        JobTitle = RoleProvider.Roles[employee.JobTitle],
+                        Department = DepartmentsProvider.Departments[employee.Department],
+                        Manager = ManagerProvider.Managers[employee.Manager],
+                        Project = ProjectsProvider.Projects[employee.Project]
+                    };
+                    return employeeInput;
                 }
             }
         }

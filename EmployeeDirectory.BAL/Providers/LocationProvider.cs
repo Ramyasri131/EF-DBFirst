@@ -11,7 +11,7 @@ namespace EmployeeDirectory.BAL.Providers
 
         public async Task GetLocations()
         {
-            List<DAL.Models.Location> locations = await _LocationRepository.GetLocations();
+            List<DAL.Models.Location> locations = await _LocationRepository.GetAll();
             foreach (DAL.Models.Location location in locations)
             {
                Location.Add(location.Id, location.Name);

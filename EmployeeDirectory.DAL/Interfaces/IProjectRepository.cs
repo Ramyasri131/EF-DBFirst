@@ -2,8 +2,7 @@
 
 namespace EmployeeDirectory.DAL.Interfaces
 {
-    public interface IProjectRepository
+    public interface IProjectRepository:IGenericRepository<Project>
     {
-        public Task<List<Project>> GetProjects();
     }
 }

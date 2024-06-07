@@ -28,19 +28,20 @@ namespace EmployeeDirectory.Services
             Display.Print("Enter Date Of Join in (dd/mm/yyyy):");
             employeeInput.DateOfJoin = Console.ReadLine();
             Display.Print("select Location:");
-            employeeInput.Location = int.Parse(GetDetails("location", LocationProvider.Location, "Add"));
+            employeeInput.Location = GetDetails("location", LocationProvider.Location, "Add");
             Display.Print("select JobTitle:");
-            employeeInput.JobTitle = int.Parse(GetDetails("jobTitle", RoleProvider.Roles, "Add"));
+            employeeInput.JobTitle = GetDetails("jobTitle", RoleProvider.Roles, "Add");
             Display.Print("select Department:");
-            employeeInput.Department = int.Parse(GetDetails("department", DepartmentsProvider.Departments, "Add"));
+            employeeInput.Department = GetDetails("department", DepartmentsProvider.Departments, "Add");
             Display.Print("select Manager");
-            employeeInput.Manager = int.Parse(GetDetails("Manager", ManagerProvider.Managers, "Add"));
+            employeeInput.Manager = GetDetails("Manager", ManagerProvider.Managers, "Add");
             Display.Print("select Project");
-            employeeInput.Project = int.Parse(GetDetails("Project", ProjectsProvider.Projects, "Add"));
+            employeeInput.Project = GetDetails("Project", ProjectsProvider.Projects, "Add");
             List<string> InvalidInputs = EmployeeValidator.ValidateDetails(employeeInput);
             if (InvalidInputs.Count == 0)
             {
                await _employeeProvider.AddEmployee(employeeInput);
+               Display.Print("Employee Added");
             }
             else
             {
@@ -54,28 +55,8 @@ namespace EmployeeDirectory.Services
 
         public async Task DisplayEmployees()
         {
-            List<DAL.Models.Employee> employeeData = await _employeeProvider.GetEmployees();
-            List<BAL.DTO.Employee> employees = new List<BAL.DTO.Employee>();
-            foreach(DAL.Models.Employee employee in employeeData)
-            {
-                BAL.DTO.Employee employeeInput = new()
-                {
-                    Id=employee.Id,
-                    FirstName = employee.FirstName,
-                    LastName = employee.LastName,
-                    DateOfBirth = employee.DateOfBirth.ToString(),
-                    Email = employee.Email,
-                    MobileNumber = employee.MobileNumber,
-                    DateOfJoin = employee.DateOfJoin.ToString(),
-                    Location = employee.Location,
-                    JobTitle = employee.JobTitle,
-                    Department = employee.Department,
-                    Manager = employee.Manager,
-                    Project = employee.Project
-                };
-                employees.Add(employeeInput);
-            }
-            Display.PrintEmployeesData(employees);
+            List<BAL.DTO.Employee> employeeData = await _employeeProvider.GetEmployees();
+            Display.PrintEmployeesData(employeeData);
             return;
         }
 
@@ -83,23 +64,8 @@ namespace EmployeeDirectory.Services
         {
             Display.Print("Enter Employee Id");
             string? id = Console.ReadLine();
-            DAL.Models.Employee employeeData =await _employeeProvider.GetEmployeeById(id) ?? throw new BAL.Exceptions.RecordNotFound("Employee not found");
-            BAL.DTO.Employee employeeInput = new()
-            {
-                Id = employeeData.Id,
-                FirstName = employeeData.FirstName,
-                LastName = employeeData.LastName,
-                DateOfBirth = employeeData.DateOfBirth.ToString(),
-                Email = employeeData.Email,
-                MobileNumber = employeeData.MobileNumber,
-                DateOfJoin = employeeData.DateOfJoin.ToString(),
-                Location = employeeData.Location,
-                JobTitle = employeeData.JobTitle,
-                Department = employeeData.Department,
-                Manager = employeeData.Manager,
-                Project = employeeData.Project
-            };
-            Display.PrintEmployeeData(employeeInput);
+            BAL.DTO.Employee employeeData = await _employeeProvider.GetEmployeeById(id) ?? throw new BAL.Exceptions.RecordNotFound("Employee not found");
+            Display.PrintEmployeeData(employeeData);
         }
 
         public async Task EditEmployee()
@@ -163,7 +129,7 @@ namespace EmployeeDirectory.Services
                     EmployeeValidator.ValidateData(label, enteredKey);
                 }
             }
-            return selectedKey.ToString();
+            return list[selectedKey];
         }
 
         public static string GetValidDetails(string label)

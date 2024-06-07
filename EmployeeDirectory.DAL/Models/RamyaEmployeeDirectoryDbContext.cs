@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using EmployeeDirectory.DAL.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace EmployeeDirectory.DAL.Models;
 

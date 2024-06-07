@@ -1,6 +1,8 @@
 ﻿using System.Globalization;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using EmployeeDirectory.BAL.DTO;
+using EmployeeDirectory.BAL.Exceptions;
 using EmployeeDirectory.BAL.Extensions;
 using EmployeeDirectory.BAL.Providers;
 
@@ -10,7 +12,7 @@ namespace EmployeeDirectory.BAL.Validators
     {
         public static List<string> ValidateDetails(DTO.Employee employee)
         {
-            int selectedKey;
+            string? option;
             List<string> invalidInputs = [];
             foreach (PropertyInfo propertyInfo in employee.GetType().GetProperties())
             {
@@ -56,31 +58,31 @@ namespace EmployeeDirectory.BAL.Validators
                                 }
                                 break;
                             case "Location":
-                                selectedKey = employee.Location;
-                                if (selectedKey <= 0 || selectedKey > LocationProvider.Location.Count)
+                                option = employee.Location;
+                                if (LocationProvider.Location.Any(location => string.Equals(location.Key, option)))
                                 {
                                     invalidInputs.Add("Location");
                                 }
                                 break;
                             case "Department":
-                                selectedKey = employee.Department;
-                                if (selectedKey <= 0 || selectedKey > DepartmentsProvider.Departments.Count)
+                                option = employee.Department;
+                                if (DepartmentsProvider.Departments.Any(department => string.Equals(department.Key, option)))
                                 {
                                     invalidInputs.Add("Department");
                                 }
                                 break;
                             case "Manager":
-                                selectedKey = employee.Manager;
-                                if (selectedKey <= 0 || selectedKey > ManagerProvider.Managers.Count)
+                                option = employee.Manager;
+                                if (ManagerProvider.Managers.Any(manager => string.Equals(manager.Key, option)))
                                 {
                                     invalidInputs.Add("Manager");
                                 }
                                 break;
                             case "Project":
-                                selectedKey = employee.Project;
-                                if (selectedKey <= 0 || selectedKey > ProjectsProvider.Projects.Count)
+                                option = employee.Project;
+                                if (ProjectsProvider.Projects.Any(project => string.Equals(project.Key, option)))
                                 {
-                                    invalidInputs.Add("Project");
+                                    invalidInputs.Add("Manager");
                                 }
                                 break;
                         }
@@ -90,7 +92,6 @@ namespace EmployeeDirectory.BAL.Validators
                         invalidInputs.Add(propertyInfo.Name);
                     }
                 }
-               
             }
             return invalidInputs;
         }

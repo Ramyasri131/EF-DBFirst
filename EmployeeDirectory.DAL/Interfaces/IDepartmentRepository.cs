@@ -2,9 +2,7 @@
 
 namespace EmployeeDirectory.DAL.Interfaces
 {
-    public interface IDepartmentRepository
+    public interface IDepartmentRepository:IGenericRepository<Department>
     {
-        public Task<List<Department>> GetDepartments();
-
     }
 }

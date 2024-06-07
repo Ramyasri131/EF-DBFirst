@@ -1,16 +1,11 @@
 ﻿using EmployeeDirectory.DAL.Interfaces;
 using EmployeeDirectory.DAL.Models;
-using Microsoft.EntityFrameworkCore;
+using EmployeeDirectory.DAL.Repositories;
 
 namespace EmployeeDirectory.DAL.Repository
 {
-    public class DepartmentRepository(RamyaEmployeeDirectoryDbContext ramyaEmployeeDirectoryDbContext) : IDepartmentRepository
+    public class DepartmentRepository(RamyaEmployeeDirectoryDbContext dbContext) : GenericRepository<Department>(dbContext), IDepartmentRepository
     {
-        private readonly RamyaEmployeeDirectoryDbContext dbContext = ramyaEmployeeDirectoryDbContext;
 
-        public async Task<List<Department>> GetDepartments()
-        {
-            return await dbContext.Set<Department>().ToListAsync();
-        }
     }
 }

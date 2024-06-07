@@ -18,21 +18,23 @@ namespace EmployeeDirectory.Services
             Display.Print("Enter RoleName");
             string? roleName = Console.ReadLine();
             Display.Print("select department");
-            int departmentId = GetDetails("department", DepartmentsProvider.Departments);
+            string department= GetDetails("department", DepartmentsProvider.Departments);
             Display.Print("Enter Description");
             string? description = Console.ReadLine();
             Display.Print("Select Location");
-            int locationId = GetDetails("location", LocationProvider.Location);
+            string location = GetDetails("location", LocationProvider.Location);
             BAL.DTO.Role roleInput;
+            List<BAL.DTO.Role>? roleData;
+            roleData = await _roleProvider.GetRoles();
             if (roleName.IsNullOrEmptyOrWhiteSpace())
             {
                 InvalidData.Add("RoleName");
             }
-            if (departmentId > DepartmentsProvider.Departments.Count)
+            if (roleData.Any(item => string.Equals(item.Name, department)))
             {
                 InvalidData.Add("Department");
             }
-            if (locationId > LocationProvider.Location.Count)
+            if (roleData.Any(item=> string.Equals(item.Name, location)))
             {
                 InvalidData.Add("Location");
             }
@@ -41,11 +43,12 @@ namespace EmployeeDirectory.Services
                 roleInput = new()
                 {
                     Name = roleName,
-                    Location = locationId,
-                    Department = departmentId,
+                    Location = location,
+                    Department = department,
                     Description = description
                 };
                 await _roleProvider.AddRole(roleInput);
+                Display.Print("Role Added");
             }
             else
             {
@@ -57,7 +60,7 @@ namespace EmployeeDirectory.Services
             }
         }
 
-        public static int GetDetails(string label, Dictionary<int, string> list)
+        public static string GetDetails(string label, Dictionary<int, string> list)
         {
             foreach (KeyValuePair<int, string> item in list)
             {
@@ -65,7 +68,7 @@ namespace EmployeeDirectory.Services
             }
             int selectedKey;
             selectedKey = int.Parse(Console.ReadLine()!);
-            return selectedKey;
+            return list[selectedKey];
         }
 
         public async Task DisplayRoles()

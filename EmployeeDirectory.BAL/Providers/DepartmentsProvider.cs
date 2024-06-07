@@ -12,7 +12,7 @@ namespace EmployeeDirectory.BAL.Providers
 
         public async Task GetDepartments()
         {
-            List<Department> departments = await _DepartmentRepository.GetDepartments();
+            List<Department> departments = await _DepartmentRepository.GetAll();
             foreach (Department department in departments)
             {
                 Departments.Add(department.Id, department.Name.ToString()!);
